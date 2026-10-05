@@ -1,1 +1,1 @@
-# IA-_Predicci-n-de-Carbono-Org-nico-en-Suelo-SOC-
+# IA-_Predicción de Carbono Orgánico en Suelo (SOC)

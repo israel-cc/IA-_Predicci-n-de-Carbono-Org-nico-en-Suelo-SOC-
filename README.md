@@ -1,0 +1,1 @@
+# IA-_Predicci-n-de-Carbono-Org-nico-en-Suelo-SOC-

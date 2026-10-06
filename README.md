@@ -46,4 +46,4 @@ La metodología toma como referencia trabajos relacionados con el mapeo digital 
 * Israel Cristobal Cortavarria - 20182712
 * Susan Sayli Lozano Bernardo - 20215871
 * Juan Pablo Huamán Chara - 20227179
-* Integrante 4 - Código PUCP
+* Jean Marcos Huaroto Romero - 20193363

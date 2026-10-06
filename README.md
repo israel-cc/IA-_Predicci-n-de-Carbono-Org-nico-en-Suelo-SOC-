@@ -37,9 +37,13 @@ La metodología toma como referencia trabajos relacionados con el mapeo digital 
 
 ## 4. Revisión de Literatura (`papers/`)
 
-* **Paper 1 (Nacional):** Salazar-Coronel et al. (2026). *Soil organic carbon content mapping along the coast of northern Peru: an ensemble machine learning approach*. Frontiers in Soil Science.
+* **Paper 1 (Nacional):** Salazar-Coronel et al. 2026. *Soil organic carbon content mapping along the coast of northern Peru: an ensemble machine learning approach*. Frontiers in Soil Science.
 
-* **Paper 2 (Metodológico/Deep Learning):** Padarian, J., Minasny, B., & McBratney, A. B. (2019). *Using deep learning for digital soil mapping*. SOIL, 5(1), 79-89.
+* **Paper 2 (Metodológico/Deep Learning):** Padarian, J., Minasny, B., & McBratney, A. B. 2019. *Using deep learning for digital soil mapping*. SOIL, 5(1), 79-89.
+
+* **Paper 3:** Mariella Carbajal et al. 2024. *From Rangelands to Cropland, Land-Use Change and Its Impact on Soil Organic Carbon Variables in a Peruvian Andean Highlands: A Machine Learning Modeling Approach*
+
+* **Paper 4:** Carbajal-Llosa et al. 2025, Geoderma Regional. *Spatial prediction of soil organic carbon stocks across contrasting Andean basins, Peru*
 
 ## 5. Integrantes del Grupo
 

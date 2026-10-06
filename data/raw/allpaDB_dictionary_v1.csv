@@ -1,0 +1,68 @@
+code;description;data_type;units
+font_type;Font of document;character;unitless
+doc_code;Document code;character;unitless
+profile_code_0;Original Identifier of the soil profile;character;unitless
+profile_code;Identifier of the soil profile removing all special characters;character;unitless
+layer_name;Genetic horizon designation;character;unitless
+sample_code;Laboratory sample code?;character;unitless
+upper_depth;Upper depth of the soil layer;integer;cm
+lower_depth;Lower depth of the soil layer;integer;cm
+TCEQ;Total calcium carbonate equivalent;float;%
+CECPH4;Cation exchange capacity estimated by buffering the soil at pH 4;float;cmol_c/kg
+CECPH7;Cation exchange capacity estimated by buffering the soil at pH 7;float;cmol_c/kg
+CECPH8;Cation exchange capacity estimated by buffering the soil at pH 8;float;cmol_c/kg
+ECEC;Effective cation exchange capacity by summation of exchangeable bases plus exchangeable acidity;float;cmol_c/kg
+ELCO11;Electrical conductivity assessed on a 1:1 soil water extract;float;dS/m
+ELCO25;Electrical conductivity assessed on a 1:2.5 soil water extract;float;dS/m
+ELCO50;Electrical conductivity assessed on a 1:5 soil water extract;float;dS/m
+ELCOSP;Electrical conductivity assessed on water saturated soil paste;float;dS/m
+ORGC;Total organic carbon by Walkley & Black wet-oxidation digestion procedure;float;%
+PHAQ;The negative logarithm (base 10) of the activity of hydronium ions in water;float;unitless
+PHKC;The negative logarithm (base 10) of the activity of hydronium ions in KCl;float;unitless
+PHNF;The negative logarithm (base 10) of the activity of hydronium ions in NaF;float;unitless
+PHETOL;Phosphorus determined according Olsen method;float;mg/kg
+PHETB1;Phosphorus determined according Bray-1 method;float;mg/kg
+NITKJD;Nitrogen by Kjeldahl wet-oxidation digestion procedure;float;%
+BD1;Bulk density by core method;float;Mg/m3
+BD2;Bulk density by clod method;float;Mg/m3
+BD3;Bulk denisty by probe method;float;Mg/m3
+SAND;Determination of total gravimetric content of sand-size fraction;integer;%
+SILT;Determination of total gravimetric content of silt-size fraction;integer;%
+CLAY;Determination of total gravimetric content of clay-size fraction;integer;%
+VCSAND;Determination of total gravimetric content of very coarse sand-size fraction;integer;%
+CSAND;Determination of total gravimetric content of coarse sand-size fraction;integer;%
+MSAND;Determination of total gravimetric content of medium sand-size fraction;integer;%
+FSAND;Determination of total gravimetric content of fine sand-size fraction;integer;%
+VFSAND;Determination of total gravimetric content of very fine sand-size fraction;integer;%
+ECA;Extractable calcium (exchangable);float;cmol_c/kg
+EMG;Extractable magnesium (exchangable);float;cmol_c/kg
+EK;Extractable poassium (exchangable);float;cmol_c/kg
+ENA;Extractable sodium (exchangable);float;cmol_c/kg
+EAL;Extractable aluminum (exchangable);float;cmol_c/kg
+EAH;Extractable acidity (exchangable);float;cmol_c/kg
+EFEOX;Extractable ion oxides by dithionite-citrate;float;%
+GYP;Gypsum content;float;%
+MSTCOL;Munsell Moist Color (Hue_Value_Chroma);character;unitless
+DRYCOL;Munsell Dry Color (Hue_Value_Chroma);character;unitless
+MOTT;Motteles presence;Boolean;T/F
+MOTCOL;Mottles predomiant Color;character;unitless
+MOTDEN;Mottles Density;integer;%
+STRT;Soil structure type;character;unitless
+STRG;Soil structure grade;character;unitless
+STRS;Soil structure size;character;unitless
+MMD;Mineral modifiers density (coarse fragments);integer;%
+MMS;Mineral modifiers size;character;unitless
+slope;slope gradiente in % range;character;unitless
+precipitation;acummulated precipitation in mm;character;unitless
+temperature;mean annual temperature;character;unitless
+life_zone;Holdridge Life Zone;character;unitless
+parent_material;Type of parent material;character;unitless
+surface_fragments;Presence and density of mineral surface fragments;character;unitless
+drainage;type of drainage;character;unitless
+permeability;level of permeability;character;unitless
+latitude;Geographic coordinate Y;float;°
+longitude;Geographic coordinate X;float;°
+ST;Soil Taxonomy Classification;character;unitless
+WRB;FAO or World Reference Base Classification;character;unitless
+;;;
+;;;

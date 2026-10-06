@@ -1,5 +1,5 @@
 # IA-_Predicción de Carbono Orgánico en Suelo (SOC)
-# Predicción de Carbono Orgánico en el Suelo (SOC) en el Perú mediante Machine Learning
+# Predicción de Carbono Orgánico en el Suelo (SOC) en el Perú mediante IA
 
 ## 1. Descripción del Problema
 

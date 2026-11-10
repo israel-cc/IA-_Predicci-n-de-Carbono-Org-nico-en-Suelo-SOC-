@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 
 from sklearn.base import clone
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import (mean_absolute_error, mean_squared_error,
+                             median_absolute_error, r2_score)
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit
 
 # ORGC esta en porcentaje: valores mayores a 100 son imposibles
@@ -25,12 +26,20 @@ def group_train_test_split(X, y, groups, test_size=0.2, random_state=42):
             groups.iloc[train_idx], groups.iloc[test_idx])
 
 
-# Metricas de regresion en la escala original de ORGC
+# Metricas de regresion en la escala original de ORGC (%):
+#   R2    : proporcion de la varianza explicada (comparable contra la literatura)
+#   RMSE  : error tipico, penaliza mucho los errores grandes (suelos ricos en carbono)
+#   MAE   : error promedio en puntos porcentuales de ORGC, facil de interpretar
+#   MedAE : error de la prediccion "tipica"; robusto a los pocos valores extremos
+METRIC_NAMES = ['R2', 'RMSE', 'MAE', 'MedAE']
+
+
 def regression_metrics(y_true, y_pred):
     return {
         'R2': r2_score(y_true, y_pred),
         'RMSE': np.sqrt(mean_squared_error(y_true, y_pred)),
         'MAE': mean_absolute_error(y_true, y_pred),
+        'MedAE': median_absolute_error(y_true, y_pred),
     }
 
 
@@ -55,5 +64,5 @@ def cross_validate_grouped(models, X, y, groups, n_splits=5):
             metrics = regression_metrics(y.iloc[test_idx], fitted.predict(X.iloc[test_idx]))
             rows.append({'Modelo': name, 'Fold': fold, **metrics})
     results = pd.DataFrame(rows)
-    summary = results.groupby('Modelo', sort=False)[['R2', 'RMSE', 'MAE']].agg(['mean', 'std'])
+    summary = results.groupby('Modelo', sort=False)[METRIC_NAMES].agg(['mean', 'std'])
     return results, summary

@@ -1,0 +1,65 @@
+XGBoost con 28 variables (mismas variables que el Random Forest ampliado)
+======================================================================
+Train 17338 filas (validacion interna 3441), test 4263 filas.
+Hiperparametros (validacion por perfil, early stopping): {'max_depth': 10, 'min_child_weight': 1, 'colsample_bytree': 0.8, 'reg_lambda': 10.0, 'n_estimators': 1009, 'learning_rate': 0.03}
+
+TOP 5 DE LA BUSQUEDA (validacion, escala log)
+   max_depth  min_child_weight  colsample_bytree  reg_lambda  n_estimators  rmse_val  r2_val
+0         10                 1               0.8          10           807    0.3826  0.6703
+1         10                 5               0.8          10           587    0.3827  0.6701
+2         10                 5               0.8           1           446    0.3830  0.6695
+3          8                 5               0.8          10          1115    0.3831  0.6695
+4          8                 5               0.8           1           581    0.3837  0.6684
+
+METRICAS EN TEST (_log: escala log1p; _pct: % de ORGC; acierto_t: % de capas con error <= t)
+Modelo        XGBoost 8 variables (mismos hiperparametros)  Random Forest 28 variables (Huaroto)  XGBoost 28 variables
+n_variables                                         8.0000                               28.0000               28.0000
+R2_log                                              0.4655                                0.6507                0.6665
+RMSE_log                                            0.4888                                0.3951                0.3861
+MAE_log                                             0.3126                                0.2520                0.2431
+MedAE_log                                           0.1931                                0.1611                0.1517
+R2_pct                                              0.2503                                0.4226                0.4543
+RMSE_pct                                            4.7574                                4.1751                4.0588
+MAE_pct                                             1.3408                                1.0931                1.0663
+MedAE_pct                                           0.3399                                0.2863                0.2649
+R2_train_log                                        0.9270                                0.9525                0.9782
+acierto_0.25                                       40.6521                               45.5782               48.2993
+acierto_0.5                                        60.4973                               67.4642               68.0272
+acierto_1                                          78.2313                               83.9315               83.6969
+
+MAE POR RANGO DE ORGC REAL (test, %)
+ORGC                                                 < 1 %   1 - 3 %  3 - 10 %   > 10 %
+n                                                 2697.000  1062.000   367.000  137.000
+MAE XGBoost 8 variables (mismos hiperparametros)     0.415     0.853     2.900   19.167
+MAE Random Forest 28 variables (Huaroto)             0.313     0.662     2.406   16.276
+MAE XGBoost 28 variables                             0.294     0.723     2.488   15.122
+
+IMPORTANCIA DE VARIABLES (ganancia, XGBoost 28 variables)
+hz_A         0.2784
+hz_O         0.1710
+hz_H         0.1338
+src_ZEE      0.0617
+EAH          0.0501
+src_HD       0.0454
+src_RES      0.0287
+CECPH7       0.0250
+hz_C         0.0226
+PHAQ         0.0165
+hz_X         0.0153
+ELCOSP       0.0130
+m_value      0.0125
+rank         0.0125
+CLAY         0.0107
+EMG          0.0100
+ECEC         0.0098
+ENA          0.0097
+m_chroma     0.0094
+hz_B         0.0093
+depth_mid    0.0093
+ECA          0.0088
+EK           0.0071
+thickness    0.0070
+SILT         0.0069
+hz_R         0.0066
+TCEQ         0.0060
+hz_E         0.0026

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Reporte SOC AllpaDB</title>
+<style>
+  @page { size: A4; margin: 1.6cm 1.5cm 1.6cm 1.5cm; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 10pt; line-height: 1.22; color: #000; background: #fff; margin: 0; }
+  .head { text-align: center; }
+  .inst { font-size: 9pt; margin-bottom: 6pt; }
+  h1 { font-size: 20pt; font-weight: normal; margin: 0 0 8pt; line-height: 1.15; }
+  .authors { display: flex; justify-content: space-between; font-size: 9.5pt; margin-bottom: 10pt; }
+  .authors div { width: 24%; text-align: center; }
+  .authors i { font-size: 8.5pt; }
+  .abstract { font-style: italic; font-size: 9.5pt; text-align: justify; margin: 0 2% 8pt; }
+  .abstract b { font-style: italic; }
+  .cols { column-count: 2; column-gap: 0.6cm; text-align: justify; }
+  h2 { font-size: 10pt; text-transform: uppercase; margin: 9pt 0 3pt; break-after: avoid; }
+  h3 { font-size: 10pt; font-style: italic; margin: 6pt 0 2pt; break-after: avoid; }
+  p { margin: 0 0 5pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 8.3pt; margin: 3pt 0 2pt; break-inside: avoid; }
+  th, td { border: 0.6pt solid #000; padding: 1.5pt 3pt; text-align: right; }
+  th { font-weight: bold; }
+  td:first-child, th:first-child { text-align: left; }
+  table.hp td:nth-child(2), table.hp td:nth-child(3), table.hp th { text-align: left; }
+  tr.group td { text-align: left; font-style: italic; background: #f0f0f0; }
+  .tcap { font-size: 8.5pt; text-align: center; text-transform: uppercase; margin: 6pt 0 2pt; break-after: avoid; }
+  .note { font-size: 8pt; margin: 0 0 6pt; }
+  figure { margin: 4pt 0 8pt; break-inside: avoid; }
+  figure img { width: 100%; }
+  figcaption { font-size: 8.5pt; text-align: center; }
+  ul { margin: 0 0 5pt; padding-left: 12pt; }
+  li { margin-bottom: 2pt; }
+  .refs p { font-size: 8.3pt; margin-bottom: 2pt; text-align: left; }
+  i.code { font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="inst">PONTIFICIA UNIVERSIDAD CATÓLICA DEL PERÚ · Facultad de Ciencias e Ingeniería<br>1INF62 Inteligencia Artificial Aplicada · Tarea Académica 2026-2</div>
+  <h1>Predicción del carbono orgánico del suelo en el Perú a partir de propiedades edáficas de AllpaDB con aprendizaje automático</h1>
+  <div class="authors">
+    <div>Jean Marcos Huaroto Romero<br><i>a20193363@pucp.edu.pe</i></div>
+    <div>Israel Cristobal Cortavarria<br><i>a20182712@pucp.edu.pe</i></div>
+    <div>Juan Pablo Huamán Chara<br><i>a20227179@pucp.edu.pe</i></div>
+    <div>Susan Sayli Lozano Bernardo<br><i>a20215871@pucp.edu.pe</i></div>
+  </div>
+</div>
+
+<div class="abstract"><b>Resumen—</b>El carbono orgánico del suelo (SOC) es importante para la fertilidad y el ciclo del carbono, pero medirlo en laboratorio toma tiempo y dinero, y en el Perú hay poca información de suelos. En este trabajo evaluamos si se puede estimar el contenido de carbono orgánico (ORGC, %) usando solo propiedades del suelo, con datos de AllpaDB, una base nacional de estudios de suelos armonizados. Después de la limpieza trabajamos con 21 601 capas de 8 206 perfiles y las separamos 80/20 por perfil para evitar fuga de información. Comparamos la media y una regresión lineal como líneas base con cuatro modelos tomados de la literatura: Random Forest, XGBoost, Cubist y una red neuronal MLP. Con ocho variables los modelos no lineales superaron a la regresión lineal (R² = 0.09) pero quedaron cerca entre ellos (R² de 0.19 a 0.26). Luego entrenamos todos los modelos con 28 variables de AllpaDB y la misma escala logarítmica del objetivo. Todos mejoraron: XGBoost fue el mejor en todas las métricas principales (R² = 0.45, MAE = 1.07 %, 84 % de las capas con error ≤ 1 %), seguido de cerca por Random Forest (R² = 0.42; MAE = 1.09 %), y fue también el mejor en validación cruzada agrupada por perfil. Los datos disponibles influyen más que el algoritmo elegido.</div>
+<div class="abstract"><b>Palabras clave—</b>carbono orgánico del suelo, aprendizaje automático, AllpaDB, función de pedotransferencia, Perú.</div>
+
+<div class="cols">
+
+<h2>I. Introducción</h2>
+<p>El carbono orgánico del suelo (SOC) influye en la fertilidad, en la retención de agua y en la estructura del suelo. Además, el suelo guarda más carbono que la vegetación, así que saber cuánto carbono tiene y dónde está sirve tanto para la agricultura como para las políticas frente al cambio climático. En el Perú hay suelos muy distintos en la costa, los Andes y la Amazonía, pero la información disponible es poca para un territorio tan grande. El análisis en laboratorio, normalmente por oxidación húmeda de Walkley-Black, necesita muestreo en campo, tiempo y presupuesto. Con la publicación de AllpaDB [1], que reúne y armoniza estudios de suelos hechos en el país desde 1962, ahora se cuenta con miles de capas de suelo con propiedades de laboratorio que se pueden comparar entre sí.</p>
+<p>Varios trabajos recientes en el Perú ya predicen el SOC con aprendizaje automático [2]–[4]. Sin embargo, trabajan con unos cientos de muestras de una o dos cuencas y se apoyan sobre todo en imágenes satelitales, clima y relieve. Por otro lado, las funciones de pedotransferencia buscan estimar propiedades difíciles de medir a partir de otras más comunes, usando bases de datos históricas [5]. Lo que no encontramos es una evaluación a escala nacional de cuánto se puede predecir el carbono orgánico solo con las propiedades que los laboratorios y los levantamientos de campo registran normalmente.</p>
+<p>Por eso, nuestro objetivo es desarrollar y comparar modelos de aprendizaje automático que predigan el contenido de carbono orgánico (ORGC, %) a partir de propiedades edáficas de AllpaDB. Comparamos seis modelos con la misma partición por perfil y las mismas métricas, primero con 8 variables y después con 28, y revisamos en qué rangos de carbono se equivoca cada uno. En la Sección II resumimos los trabajos relacionados, en la III describimos el dataset, en la IV la metodología, en la V mostramos los resultados, en la VI los discutimos y en la VII presentamos las conclusiones.</p>
+
+<h2>II. Trabajo relacionado</h2>
+<p>Salazar-Coronel <i>et al.</i> [2] mapearon el SOC (%) de la cuenca del río Motupe, en la costa norte, con 109 muestras compuestas. Usaron relieve, clima, índices de vegetación y propiedades del suelo interpoladas, y compararon SVR, Random Forest (RF), una red neuronal y XGBoost, además de dos ensambles, con validación espacial en bloques. XGBoost tuvo el mejor R² (0.83). De este trabajo tomamos RF y XGBoost con búsqueda en malla.</p>
+<p>Carbajal <i>et al.</i> [3] predijeron el SOC con 198 muestras de los Andes de Junín, usando RF, una red neuronal artificial (ANN), SVM y XGBoost con variables de uso del suelo, índices espectrales, clima y topografía. En prueba el mejor fue RF (R² = 0.49) y luego la ANN (0.43); entre algoritmos había poca diferencia, y los autores concluyen que el tamaño de la muestra importa más que el algoritmo. De aquí tomamos la red neuronal, que implementamos como MLP, y la idea de reportar métricas de entrenamiento y de prueba.</p>
+<p>Carbajal <i>et al.</i> [4] estimaron el stock de SOC en las cuencas altoandinas de Torobamba y Coata (196 sitios) con regresión geográficamente ponderada (GWR), sus variantes con kriging de residuos, RF y Gradient Boosting. La mejor variante fue GWRCK, mientras que RF y Gradient Boosting no pasaron de R² = 0.11, según los autores por la muestra pequeña y la falta de variables espaciales. De este trabajo tomamos el modelo de boosting con búsqueda en malla.</p>
+<p>Benke <i>et al.</i> [5] desarrollaron funciones de pedotransferencia para predecir el carbono orgánico con datos históricos de suelos de Victoria, Australia (1 954 muestras); la profundidad, el pH y la granulometría fueron las variables más repetidas. Es el trabajo más parecido a nuestro enfoque, y de aquí tomamos la idea de plantear el problema como una función de pedotransferencia.</p>
+<p>Ou <i>et al.</i> [6] mapearon el SOC con 12 041 muestras de suelos agrícolas de la llanura de Jianghan, China, con 17 variables. Cubist, que combina reglas con regresiones lineales locales, superó a RF, kriging y regresión lineal (R² de 0.29 frente a 0.26, 0.21 y 0.21). De aquí tomamos Cubist, ajustando sus comités y vecinos.</p>
+
+<h2>III. Dataset y análisis exploratorio</h2>
+<h3>A. Origen y descripción</h3>
+<p>Usamos AllpaDB [1], publicada en Zenodo en mayo de 2026 por la Universidad Nacional Agraria La Molina, la Universidade Federal de Santa Catarina y la PUCP, con licencia abierta CC BY 4.0. Trabajamos con el archivo <i>allpaDB_layer_HARMONIZED_v1.csv</i>, que tiene 24 341 capas (horizontes) y 45 columnas, de 8 793 perfiles y 224 documentos. La variable objetivo es ORGC, el carbono orgánico total medido por Walkley-Black (%). El conjunto base de predictores fue: profundidad superior e inferior, pH en agua (PHAQ), arena, limo y arcilla, carbonato de calcio equivalente (TCEQ), conductividad eléctrica (ELCOSP) y capacidad de intercambio catiónico efectiva (ECEC).</p>
+<h3>B. Hallazgos del EDA</h3>
+<p>ORGC tiene 11.2 % de valores faltantes y 8 valores mayores a 100 %, que no son posibles. Su distribución es muy asimétrica (asimetría de 7.3, mediana de 0.69 % y media de 2.0 %): en el conjunto de prueba, el 63 % de las capas tiene menos de 1 % de carbono y solo el 3.2 % pasa de 10 %, que corresponde a suelos orgánicos. En los predictores, los faltantes van desde 4 % en las profundidades hasta 38 % en ELCOSP. Encontramos texturas que no suman 100 ± 5 (134 capas), 32 valores de pH menores a 2 y muchos atípicos en TCEQ y ELCOSP. Las correlaciones lineales con ORGC son bajas (la más alta, pH: −0.20), lo que anticipaba un mal resultado de los modelos lineales. Las profundidades superior e inferior están muy relacionadas (r = 0.81) y la arena se deduce del limo y la arcilla.</p>
+
+<h2>IV. Metodología</h2>
+<h3>A. Preprocesamiento y partición de datos</h3>
+<p>Eliminamos las filas sin ORGC (2 732) y con ORGC mayor a 100 % (8), y quedaron 21 601 capas. Las texturas que no suman 100 ± 5 y los pH menores a 2 se convirtieron en faltantes. En vez de las dos profundidades usamos la profundidad media (<i>depth_mid</i>) y el espesor (<i>thickness</i>), y quitamos la arena, con lo que quedaron 8 predictores. La partición se hizo por perfil, para que las capas de un mismo perfil no estén a la vez en entrenamiento y prueba: 80 % de los perfiles para entrenamiento (17 338 capas, 6 564 perfiles) y 20 % para prueba (4 263 capas, 1 642 perfiles), con semilla 42. Todo lo siguiente se ajustó solo con el entrenamiento: log(1 + x) a TCEQ, ELCOSP, ECEC y espesor; recorte de atípicos con IQR; imputación con media o mediana según la asimetría, y estandarización z-score para la regresión lineal y la MLP.</p>
+<h3>B. Variables adicionales (28 predictores)</h3>
+<p>Con 8 variables, ajustar los hiperparámetros de RF casi no cambiaba el resultado (R² de validación 0.477 → 0.484), así que agregamos 20 variables de AllpaDB que describen el suelo pero no miden el carbono: cationes intercambiables (Ca, Mg, K, Na), acidez intercambiable (EAH), CIC a pH 7, valor y croma del color Munsell húmedo, posición de la capa en el perfil, horizonte (A, B, C, O, H, E, R u otro) y fuente de los datos. Las dos últimas son categóricas y se codificaron con <i>one-hot</i>; las numéricas se imputaron con la mediana del entrenamiento. No incluimos la densidad aparente (BD2), que se explica con R² = 0.90 a partir de textura y ORGC porque fue estimada con el propio carbono, ni el nitrógeno total, que se mide en el mismo análisis. En este segundo experimento <b>todos los modelos</b> usan los 28 predictores y se entrenan sobre log(1 + ORGC); las predicciones se devuelven a % antes de calcular las métricas.</p>
+<h3>C. Modelos implementados</h3>
+<p>Como líneas base usamos la media del entrenamiento y una regresión lineal múltiple con las variables estandarizadas. <b>Random Forest</b> [2] es un conjunto de árboles de decisión; sus hiperparámetros se eligieron separando el 20 % de los perfiles de entrenamiento como validación, y el modelo final tiene 500 árboles. <b>XGBoost</b> [2], [4] es un modelo de boosting de árboles [7]; con 28 variables lo ajustamos con una malla de 32 combinaciones en la misma validación y fijamos el número de árboles con parada temprana. <b>Cubist</b> [6] genera reglas, ajusta una regresión lineal dentro de cada una, las combina en comités y corrige la predicción con los vecinos más cercanos. La <b>MLP</b> [3] es una red de capas totalmente conectadas, con ReLU, Adam y parada temprana. Cubist y la MLP se volvieron a ajustar con 28 variables en la misma validación (Tabla II). Además, para comprobar que el orden de los modelos no depende de una sola partición, evaluamos todos con validación cruzada agrupada por perfil (GroupKFold, 5 particiones) sobre el entrenamiento. Todos los modelos, salvo XGBoost y Cubist, se implementaron con scikit-learn [8].</p>
+<h3>D. Métricas de evaluación</h3>
+<p>Usamos R², RMSE, MAE y el error absoluto mediano (MedAE), en % de ORGC y sobre el conjunto de prueba. Como ORGC es muy asimétrica, el R² y el RMSE dependen sobre todo de las pocas capas con mucho carbono, mientras que el MAE y el MedAE reflejan el error en la mayoría de capas. Por eso reportamos ambos tipos de métricas, el MAE por rangos de ORGC, el R² en escala logarítmica (la que optimizan los modelos) y el porcentaje de capas con error ≤ 1 %.</p>
+
+<h2>V. Resultados</h2>
+<p>La Tabla I compara todos los modelos sobre las mismas 4 263 capas de prueba. Con 8 predictores (resultados de cada integrante), XGBoost obtiene el mayor R² (0.26) y la MLP y RF el menor MAE (1.38 %). Con 28 predictores todos los modelos mejoran. XGBoost es el mejor en R² (0.45), RMSE (4.06 %), MAE (1.07 %) y MedAE (0.26 %); RF queda muy cerca (R² = 0.42; MAE = 1.09 %), seguido de Cubist (R² = 0.40; MAE = 1.10 %) y la MLP (R² = 0.44; MAE = 1.14 %), que tiene buen R² en % pero el menor R² en escala log de los modelos no lineales. Incluso la regresión lineal sube de R² = 0.09 a 0.12 y su MAE baja de 2.17 a 1.45 %.</p>
+
+<div class="tcap">Tabla I. Comparación de métricas en el conjunto de prueba</div>
+<table>
+  <tr><th>Modelo</th><th>R²</th><th>RMSE (%)</th><th>MAE (%)</th><th>MedAE (%)</th><th>R² log</th></tr>
+  <tr class="group"><td colspan="6">8 predictores</td></tr>
+  <tr><td>Media</td><td>0.00</td><td>5.49</td><td>2.18</td><td>1.52</td><td>—</td></tr>
+  <tr><td>Regresión lineal</td><td>0.09</td><td>5.23</td><td>2.17</td><td>1.35</td><td>—</td></tr>
+  <tr><td>Random Forest [2]</td><td>0.21</td><td>4.87</td><td>1.38</td><td>—</td><td>0.45</td></tr>
+  <tr><td>XGBoost [2], [4]</td><td>0.26</td><td>4.72</td><td>1.64</td><td>0.51</td><td>—</td></tr>
+  <tr><td>Cubist [6]</td><td>0.22</td><td>4.85</td><td>1.66</td><td>0.43</td><td>—</td></tr>
+  <tr><td>MLP [3]</td><td>0.19</td><td>4.95</td><td>1.38</td><td>0.34</td><td>—</td></tr>
+  <tr class="group"><td colspan="6">28 predictores (todos sobre log(1 + ORGC))</td></tr>
+  <tr><td>Media</td><td>−0.03</td><td>5.57</td><td>1.72</td><td>0.71</td><td>0.00</td></tr>
+  <tr><td>Regresión lineal</td><td>0.12</td><td>5.15</td><td>1.45</td><td>0.45</td><td>0.39</td></tr>
+  <tr><td>Random Forest [2]</td><td>0.42</td><td>4.18</td><td>1.09</td><td>0.29</td><td>0.65</td></tr>
+  <tr><td><b>XGBoost [2], [4]</b></td><td><b>0.45</b></td><td><b>4.06</b></td><td><b>1.07</b></td><td><b>0.26</b></td><td><b>0.67</b></td></tr>
+  <tr><td>Cubist [6]</td><td>0.40</td><td>4.25</td><td>1.10</td><td>0.28</td><td>0.64</td></tr>
+  <tr><td>MLP [3]</td><td>0.44</td><td>4.13</td><td>1.14</td><td>0.29</td><td>0.60</td></tr>
+</table>
+<div class="note">— : no reportado. Con 8 predictores, XGBoost y Cubist se entrenaron sobre ORGC en %, y RF y la MLP sobre log(1 + ORGC). En negrita, el mejor valor con 28 predictores.</div>
+
+<figure><img src="../results/final_28vars/plots/comparacion_metricas_28vars.png" alt="R2 y MAE por modelo"><figcaption>Fig. 1. R² (escala log) y MAE (%) de cada modelo con 28 predictores en el conjunto de prueba.</figcaption></figure>
+
+<p>La Tabla II resume la búsqueda de hiperparámetros con 28 variables; en todos los modelos se usó la misma validación separada (20 % de los perfiles de entrenamiento). La Tabla III muestra la validación cruzada agrupada: XGBoost es el mejor en las tres métricas y su ventaja en R² log (0.68 frente a 0.64–0.65) es mayor que la desviación entre particiones (≈ 0.02), mientras que RF y Cubist quedan empatados.</p>
+
+<div class="tcap">Tabla II. Hiperparámetros explorados y mejor configuración</div>
+<table class="hp">
+  <tr><th>Modelo</th><th>Hiperparámetro</th><th>Valores probados</th><th>Mejor</th></tr>
+  <tr><td>RF</td><td>max_features</td><td>0.33, 0.5, 0.7, 1.0</td><td>0.5</td></tr>
+  <tr><td>RF</td><td>max_depth / min_samples_leaf</td><td>15, 25 / 1, 3</td><td>25 / 1</td></tr>
+  <tr><td>XGBoost</td><td>max_depth</td><td>4, 6, 8, 10</td><td>10</td></tr>
+  <tr><td>XGBoost</td><td>min_child_weight</td><td>1, 5</td><td>1</td></tr>
+  <tr><td>XGBoost</td><td>colsample_bytree / reg_lambda</td><td>0.5, 0.8 / 1, 10</td><td>0.8 / 10</td></tr>
+  <tr><td>XGBoost</td><td>n.º de árboles (lr = 0.03)</td><td>parada temprana</td><td>1 009</td></tr>
+  <tr><td>Cubist</td><td>n_committees / neighbors</td><td>10, 20 / ninguno, 5, 9</td><td>20 / 9</td></tr>
+  <tr><td>MLP</td><td>capas ocultas</td><td>(128, 64, 32), (256, 128, 64)</td><td>(256, 128, 64)</td></tr>
+  <tr><td>MLP</td><td>alpha (L2)</td><td>0.01, 0.1, 1</td><td>0.1</td></tr>
+</table>
+
+<div class="tcap">Tabla III. Validación cruzada agrupada por perfil (5 particiones, 28 predictores)</div>
+<table>
+  <tr><th>Modelo</th><th>R² log</th><th>R² (%)</th><th>MAE (%)</th></tr>
+  <tr><td>Regresión lineal</td><td>0.39 ± 0.02</td><td>0.12 ± 0.03</td><td>1.49 ± 0.07</td></tr>
+  <tr><td>MLP</td><td>0.58 ± 0.03</td><td>0.39 ± 0.02</td><td>1.23 ± 0.03</td></tr>
+  <tr><td>Cubist</td><td>0.64 ± 0.02</td><td>0.44 ± 0.07</td><td>1.13 ± 0.06</td></tr>
+  <tr><td>Random Forest</td><td>0.65 ± 0.02</td><td>0.42 ± 0.07</td><td>1.13 ± 0.07</td></tr>
+  <tr><td><b>XGBoost</b></td><td><b>0.68 ± 0.02</b></td><td><b>0.48 ± 0.06</b></td><td><b>1.08 ± 0.05</b></td></tr>
+</table>
+<div class="note">Media ± desviación estándar entre particiones.</div>
+
+<p>En la Fig. 2 se ve el MAE por rango de ORGC con 28 predictores. Debajo de 1 % de carbono XGBoost, Cubist y RF tienen errores de solo 0.29 a 0.31 % (MLP: 0.33 %), contra 0.48 % de la regresión lineal y 0.63 % de la media. En las capas con más de 10 %, XGBoost tiene el menor error (15.1 %), seguido de la MLP (15.3 %), Cubist (15.9 %) y RF (16.2 %). Sobre el sobreajuste, XGBoost pasa de R² log = 0.98 en entrenamiento a 0.67 en prueba RF de 0.95 a 0.65 y Cubist de 0.85 a 0.64, mientras que la MLP (0.77 y 0.60) y la regresión lineal (0.40 y 0.39) casi no cambian.</p>
+
+<figure><img src="../results/final_28vars/plots/mae_por_rango_28vars.png" alt="MAE por rango"><figcaption>Fig. 2. MAE por rango de ORGC real en el conjunto de prueba con 28 predictores (escala logarítmica).</figcaption></figure>
+
+<figure><img src="../results/xgboost_28vars/plots/xgboost_28vars.png" alt="XGBoost 8 vs 28 variables"><figcaption>Fig. 3. XGBoost con 8 y con 28 predictores: valor real frente a predicho (escala log) e importancia de variables (ganancia).</figcaption></figure>
+
+<h2>VI. Discusión</h2>
+<p><b>Agregar información ayudó mucho más que cambiar de algoritmo.</b> Con los mismos hiperparámetros, XGBoost pasó de R² log = 0.47 con 8 variables a 0.67 con 28, y su MAE bajó de 1.34 a 1.07 %; RF pasó de R² = 0.21 a 0.42. Todos los modelos mejoraron en todos los rangos de carbono, mientras que ajustar los hiperparámetros con 8 variables casi no cambiaba nada. Es la misma conclusión de [3] y [5]: la mejora depende sobre todo de tener más y mejores variables.</p>
+<p><b>Con más información sí aparecen diferencias entre algoritmos.</b> Con 8 variables los modelos no lineales quedaban entre R² = 0.19 y 0.26. Con 28, los modelos basados en árboles (XGBoost, RF y Cubist, R² log de 0.64 a 0.67) se separan de la MLP (0.60) y sobre todo de la regresión lineal (0.39). Las nuevas variables actúan por interacciones y umbrales: el efecto del pH o de la CIC cambia según el horizonte y la región, y los árboles capturan eso sin especificarlo. En datos tabulares de este tamaño, con muchas variables binarias, la MLP aprende esas interacciones con menos eficiencia.</p>
+<p><b>Desaparece el conflicto entre R² y MAE.</b> Con 8 variables, XGBoost y Cubist (entrenados en %) ganaban en R² y RF y la MLP (entrenados en log) en MAE. Al entrenar todos en escala logarítmica la comparación es justa, y XGBoost gana en ambas métricas: el boosting corrige secuencialmente los residuos grandes y por eso pierde menos precisión en los suelos orgánicos. La diferencia con RF es pequeña en la prueba (0.03 de R²), pero la validación cruzada confirma que XGBoost es mejor en todas las particiones.</p>
+<p><b>Las variables más importantes</b> en XGBoost son el horizonte (A, O y H), la fuente de los datos y la acidez intercambiable. Es coherente con la edafología: la materia orgánica se acumula en los horizontes superficiales (A) y orgánicos (O, H), y los suelos ácidos de altura la descomponen más lento. El horizonte y el color se registran en campo sin laboratorio, lo que hace más útil el modelo como función de pedotransferencia.</p>
+<p><b>La mayor parte del error sigue en los suelos orgánicos.</b> Las 137 capas con más de 10 % de ORGC (3.2 % de la prueba) tienen un MAE de 15 a 16 % incluso en los mejores modelos. Creemos que estos suelos, como los bofedales andinos, dependen más del uso del suelo y del ambiente que de las propiedades usadas; en [3] el uso del suelo fue la variable más importante.</p>
+<p><b>Limitaciones.</b> AllpaDB junta datos de distintos laboratorios y épocas, y el archivo de capas no trae coordenadas, por lo que no usamos variables ambientales ni validación espacial; el modelo podría rendir peor en regiones o levantamientos poco representados. La fuente de los datos aparece entre las variables importantes, lo que sugiere diferencias de método entre levantamientos y que el modelo podría no generalizar a fuentes nuevas. El color Munsell y la CIC a pH 7 se imputaron con la mediana en el 52 % y el 48 % del entrenamiento, lo que reduce su información. XGBoost y RF sobreajustan (R² log de entrenamiento de 0.95 a 0.98), aunque eso no empeora su desempeño en prueba ni en validación cruzada. Los suelos orgánicos están poco representados (3 % de las capas) y concentran la mayor parte del error. Por último, el preprocesamiento de las 8 variables base se ajustó con todo el entrenamiento antes de la validación cruzada, lo que puede hacer algo optimistas sus métricas. El costo computacional fue bajo: cada búsqueda tomó pocos minutos en CPU.</p>
+
+<h2>VII. Conclusiones y trabajo futuro</h2>
+<ul>
+  <li>Sí se puede estimar el carbono orgánico con propiedades del suelo de rutina. Con 8 variables la precisión es limitada (mejor R² = 0.26), pero con 28 el mejor modelo, XGBoost, alcanza R² = 0.45, MAE = 1.07 % y MedAE = 0.26 %, y el 84 % de las capas queda a menos de 1 % del valor real.</li>
+  <li>XGBoost fue el mejor modelo tanto en la prueba como en la validación cruzada agrupada (R² log = 0.68 ± 0.02). Los datos pesan más que el algoritmo: agregar horizonte, cationes, CIC a pH 7 y color mejoró a todos los modelos mucho más que cualquier ajuste de hiperparámetros. Con esa información, los modelos basados en árboles (XGBoost, RF y Cubist) son claramente superiores a la MLP y a la regresión lineal.</li>
+  <li>Como trabajo futuro proponemos agregar coordenadas y variables ambientales con validación espacial, tratar aparte los suelos orgánicos y probar ensambles.</li>
+</ul>
+
+<h2>Declaración de uso de IA</h2>
+<p>Usamos Claude (Anthropic, modelos Claude Opus 5.5 y Claude Sonnet 5.5) y ChatGPT (OpenAI) como apoyo para implementar y depurar el código de los modelos, revisar el código del repositorio, volver a calcular las métricas comparativas, generar las figuras y redactar un primer borrador de este reporte. Revisamos, verificamos y editamos todo el contenido, y asumimos la responsabilidad total del trabajo.</p>
+
+<h2>Repositorio y contribuciones</h2>
+<p>Repositorio: https://github.com/israel-cc/IA-_Predicci-n-de-Carbono-Org-nico-en-Suelo-SOC-</p>
+<ul>
+  <li><b>J. M. Huaroto Romero:</b> revisión de [2]; modelo Random Forest y experimento con variables adicionales.</li>
+  <li><b>I. Cristobal Cortavarria:</b> revisión de [6]; actualización del preprocesamiento y modelo Cubist.</li>
+  <li><b>J. P. Huamán Chara:</b> revisión de [3]; modelo MLP y redacción del reporte.</li>
+  <li><b>S. S. Lozano Bernardo:</b> revisión de [4]; líneas base, pipeline reproducible en <i>src/</i> (Random Forest y XGBoost) y documentación del dataset.</li>
+</ul>
+
+<div class="refs">
+<h2>Referencias</h2>
+<p>[1] C. Mestanza <i>et al.</i>, “AllpaDB: A compiled repository of harmonized soil legacy data and research data from Peru,” <i>Sci. Data</i>, 2026, doi: 10.1038/s41597-026-07558-9.</p>
+<p>[2] W. Salazar-Coronel, C. Carbajal-Llosa, and R. Chuchon-Remon, “Soil organic carbon content mapping along the coast of northern Peru: An ensemble machine learning approach,” <i>Front. Soil Sci.</i>, vol. 6, Art. no. 1745154, 2026, doi: 10.3389/fsoil.2026.1745154.</p>
+<p>[3] M. Carbajal <i>et al.</i>, “From rangelands to cropland, land-use change and its impact on soil organic carbon variables in a Peruvian Andean highlands: A machine learning modeling approach,” <i>Ecosystems</i>, vol. 27, pp. 899–917, 2024, doi: 10.1007/s10021-024-00928-7.</p>
+<p>[4] C. Carbajal, M. Tumbalobos-Dextre, T. Condori-Ataupillco, N. Cuellar-Condori, and C. Gavilan, “Spatial prediction of soil organic carbon stocks across contrasting Andean basins, Peru,” <i>Geoderma Reg.</i>, vol. 43, Art. no. e01026, 2025, doi: 10.1016/j.geodrs.2025.e01026.</p>
+<p>[5] K. K. Benke, S. Norng, N. J. Robinson, K. Chia, D. B. Rees, and J. Hopley, “Development of pedotransfer functions by machine learning for prediction of soil electrical conductivity and organic carbon content,” <i>Geoderma</i>, vol. 366, Art. no. 114210, 2020, doi: 10.1016/j.geoderma.2020.114210.</p>
+<p>[6] J. Ou, Z. Wu, Q. Yan, X. Feng, and Z. Zhao, “Improving soil organic carbon mapping in farmlands using machine learning models and complex cropping system information,” <i>Environ. Sci. Eur.</i>, vol. 36, Art. no. 80, 2024, doi: 10.1186/s12302-024-00912-x.</p>
+<p>[7] T. Chen and C. Guestrin, “XGBoost: A scalable tree boosting system,” in <i>Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data Min.</i>, 2016, pp. 785–794.</p>
+<p>[8] F. Pedregosa <i>et al.</i>, “Scikit-learn: Machine learning in Python,” <i>J. Mach. Learn. Res.</i>, vol. 12, pp. 2825–2830, 2011.</p>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Modelo,n_variables,R2_log,RMSE_log,MAE_log,MedAE_log,R2_pct,RMSE_pct,MAE_pct,MedAE_pct,R2_train_log,acierto_0.25,acierto_0.5,acierto_1
+XGBoost 8 variables (mismos hiperparametros),8,0.4655,0.4888,0.3126,0.1931,0.2503,4.7574,1.3408,0.3399,0.927,40.6521,60.4973,78.2313
+Random Forest 28 variables (Huaroto),28,0.6507,0.3951,0.252,0.1611,0.4226,4.1751,1.0931,0.2863,0.9525,45.5782,67.4642,83.9315
+XGBoost 28 variables,28,0.6665,0.3861,0.2431,0.1517,0.4543,4.0588,1.0663,0.2649,0.9782,48.2993,68.0272,83.6969

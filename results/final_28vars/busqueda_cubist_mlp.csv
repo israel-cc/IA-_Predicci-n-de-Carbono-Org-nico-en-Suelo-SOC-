@@ -1,0 +1,13 @@
+Modelo,config,r2_val,rmse_val
+Cubist,"n_committees=20, neighbors=9",0.6489,0.3948
+Cubist,"n_committees=10, neighbors=9",0.6398,0.3999
+Cubist,"n_committees=20, neighbors=5",0.6359,0.402
+Cubist,"n_committees=10, neighbors=5",0.6259,0.4075
+Cubist,"n_committees=20, neighbors=None",0.6253,0.4079
+Cubist,"n_committees=10, neighbors=None",0.6156,0.4131
+MLP,"capas=(256, 128, 64), alpha=0.1",0.5862,0.4286
+MLP,"capas=(128, 64, 32), alpha=0.1",0.5794,0.4321
+MLP,"capas=(256, 128, 64), alpha=0.01",0.5778,0.4329
+MLP,"capas=(128, 64, 32), alpha=1.0",0.5722,0.4358
+MLP,"capas=(128, 64, 32), alpha=0.01",0.5675,0.4382
+MLP,"capas=(256, 128, 64), alpha=1.0",0.563,0.4405

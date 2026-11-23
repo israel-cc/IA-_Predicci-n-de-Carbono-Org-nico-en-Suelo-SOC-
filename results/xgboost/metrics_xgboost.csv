@@ -1,0 +1,5 @@
+Modelo,R2_test,RMSE_test,MAE_test,MedAE_test,R2_train,R2_cv_mean,R2_cv_std,RMSE_cv_mean,RMSE_cv_std,MAE_cv_mean,MAE_cv_std
+Random Forest (referencia),0.2713,4.6903,1.6297,0.5432,0.5654,0.2782,0.0376,4.5048,0.4074,1.6873,0.0509
+XGBoost original,0.273,4.685,1.6709,0.5789,0.627,0.2836,0.0458,4.4846,0.3836,1.7288,0.0421
+XGBoost + target log,0.232,4.8151,1.3533,0.3658,0.4084,0.2443,0.0373,4.609,0.411,1.3988,0.0605
+XGBoost mejorado (log + ajuste),0.2422,4.7831,1.3347,0.3517,0.4722,0.2537,0.0411,4.5797,0.4092,1.3894,0.0594

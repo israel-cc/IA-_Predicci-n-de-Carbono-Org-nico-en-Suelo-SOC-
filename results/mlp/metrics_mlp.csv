@@ -1,0 +1,2 @@
+Modelo,R2_test,RMSE_test,MAE_test,MedAE_test,R2_train,R2_cv_mean,R2_cv_std,RMSE_cv_mean,RMSE_cv_std,MAE_cv_mean,MAE_cv_std
+MLP,0.153,4.6958,1.4025,0.3476,0.2261,0.189,0.0392,4.806,0.4626,1.4359,0.0598

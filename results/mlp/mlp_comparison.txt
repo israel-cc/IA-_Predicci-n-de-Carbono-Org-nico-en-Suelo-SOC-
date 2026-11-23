@@ -1,0 +1,37 @@
+MLP - Prediccion de ORGC (%) con AllpaDB
+==================================================
+Division 80/20 agrupada por perfil: 17349 filas de entrenamiento, 4252 de prueba.
+Hiperparametros (CV agrupada de 3 folds, se minimiza el MAE): {'alpha': 0.1, 'hidden_layer_sizes': (128, 64, 32), 'learning_rate_init': 0.001}
+MAE de validacion: 1.437
+Epocas de entrenamiento: 99
+
+METRICAS EN EL CONJUNTO DE PRUEBA
+                             R2_test  RMSE_test  MAE_test  MedAE_test  R2_train  R2_cv_mean  R2_cv_std
+Modelo                                                                                                
+Media                        -0.0002     5.1030    2.1635      1.5004    0.0000     -0.0001     0.0001
+Mediana                      -0.0608     5.2554    1.6369      0.4944   -0.0606     -0.0608     0.0065
+Regresion Lineal              0.0925     4.8608    2.1215      1.2763    0.0875      0.0886     0.0114
+Regresion Lineal (log ORGC)   0.0530     4.9655    1.5445      0.5231    0.0425      0.0436     0.0074
+Random Forest                 0.2807     4.3276    1.6322      0.5577    0.5255      0.2848     0.0405
+XGBoost                       0.2334     4.4674    1.6643      0.5268    0.8259      0.2816     0.0370
+MLP                           0.1530     4.6958    1.4025      0.3476    0.2261      0.1890     0.0392
+
+MAE POR RANGO DE ORGC REAL (prueba)
+             n     MAE
+ORGC                  
+< 1 %     2682   0.376
+1 - 3 %   1065   0.814
+3 - 10 %   368   3.097
+> 10 %     137  21.526
+Predicciones negativas: 0
+
+IMPORTANCIA POR PERMUTACION (aumento del MAE)
+lower_depth    0.228
+PHAQ           0.174
+ECEC           0.173
+SAND           0.151
+SILT           0.093
+ELCOSP         0.082
+CLAY           0.081
+upper_depth    0.065
+TCEQ           0.028

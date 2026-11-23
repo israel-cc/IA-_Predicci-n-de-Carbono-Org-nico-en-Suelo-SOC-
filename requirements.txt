@@ -8,3 +8,4 @@ xgboost>=2.0
 jupyter>=1.0
 nbconvert>=7.0
 ipykernel>=6.0
+cubist

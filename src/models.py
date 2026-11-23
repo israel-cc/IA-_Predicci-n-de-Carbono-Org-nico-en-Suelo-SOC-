@@ -136,3 +136,59 @@ def get_all_models(random_forest=None, xgboost=None):
     models['Random Forest'] = random_forest if random_forest is not None else create_random_forest()
     models['XGBoost'] = xgboost if xgboost is not None else create_xgboost()
     return models
+
+
+# XGBoost entrenado sobre log(1 + ORGC): reduce la asimetria del target y evita que el
+# modelo se concentre en los pocos suelos organicos. Las predicciones se devuelven en %
+# (expm1), por lo que las metricas son comparables con los demas modelos.
+def create_xgboost_log(**kwargs):
+    return TransformedTargetRegressor(
+        regressor=create_xgboost(**kwargs),
+        func=np.log1p,
+        inverse_func=np.expm1
+    )
+
+
+# Rejilla para XGBoost con target log (prefijo regressor__model__ por el TransformedTargetRegressor)
+XGB_LOG_PARAM_GRID = {
+    'regressor__model__max_depth': [3, 5, 7],
+    'regressor__model__learning_rate': [0.03, 0.1],
+    'regressor__model__min_child_weight': [1, 5, 10],
+    'regressor__model__n_estimators': [300, 600],
+    'regressor__model__reg_lambda': [1, 10],
+}
+
+
+def tune_xgboost_log(X_train, y_train, groups_train, n_splits=3, random_state=42):
+    return _tune(create_xgboost_log(random_state=random_state), XGB_LOG_PARAM_GRID,
+                 X_train, y_train, groups_train, n_splits)
+
+
+# ----------------------------------------------------------------------------------------
+# Modelos del experimento final con 28 variables (src/run_all_28vars.py).
+# Todos se entrenan sobre log1p(ORGC); los hiperparametros son los elegidos en validacion.
+# ----------------------------------------------------------------------------------------
+def create_mlp_28(hidden_layer_sizes=(256, 128, 64), alpha=0.1, random_state=42):
+    from sklearn.neural_network import MLPRegressor
+    from sklearn.preprocessing import StandardScaler
+    return Pipeline([('scaler', StandardScaler()), ('model', MLPRegressor(
+        hidden_layer_sizes=hidden_layer_sizes, alpha=alpha, learning_rate_init=0.001,
+        batch_size=256, early_stopping=True, n_iter_no_change=20, max_iter=500,
+        random_state=random_state))])
+
+
+def create_cubist_28(n_committees=20, neighbors=9, random_state=42):
+    from cubist import Cubist
+    return Cubist(n_rules=100, n_committees=n_committees, neighbors=neighbors,
+                  random_state=random_state)
+
+
+def create_random_forest_28(random_state=42):
+    return RandomForestRegressor(n_estimators=500, max_features=0.5, max_depth=25,
+                                 min_samples_leaf=1, random_state=random_state, n_jobs=-1)
+
+
+def create_xgboost_28(random_state=42):
+    return XGBRegressor(objective='reg:squarederror', tree_method='hist', n_estimators=1009,
+                        learning_rate=0.03, max_depth=10, min_child_weight=1, subsample=0.8,
+                        colsample_bytree=0.8, reg_lambda=10.0, random_state=random_state, n_jobs=-1)
